@@ -1,0 +1,29 @@
+{
+    "typescript": {
+        "indentWidth": 4,
+        "lineWidth": 120,
+        "newLineKind": "lf",
+        "useTabs": false,
+
+        "preferHanging": true,
+        "bracePosition": "sameLine",
+
+        "switchCase.bracePosition": "nextLine",
+        "ifStatement.bracePosition": "nextLine",
+        "forStatement.bracePosition": "nextLine",
+        "tryStatement.bracePosition": "nextLine",
+        "arrowFunction.bracePosition": "nextLine",
+        "forInStatement.bracePosition": "nextLine",
+        "forOfStatement.bracePosition": "nextLine",
+        "whileStatement.bracePosition": "nextLine",
+        "classExpression.bracePosition": "nextLine",
+        "enumDeclaration.bracePosition": "nextLine",
+        "switchStatement.bracePosition": "nextLine",
+        "classDeclaration.bracePosition": "nextLine",
+        "doWhileStatement.bracePosition": "nextLine",
+        "moduleDeclaration.bracePosition": "nextLine",
+    },
+
+    "excludes": [ "**/*.min.*", "**/*.vendor.*", "**/*.lock" ],
+    "plugins": [ "https://plugins.dprint.dev/typescript-0.95.12.wasm" ]
+}
