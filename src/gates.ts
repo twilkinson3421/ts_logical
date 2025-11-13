@@ -1,74 +1,88 @@
 import * as Relay from "./relay.ts";
-import { Voltage } from "./voltage.ts";
+import { MasterVoltage, type Voltage } from "./voltage.ts";
+
+export namespace Constant
+{
+    export type _1 = MasterVoltage;
+    export type _0 = NOT<MasterVoltage>;
+
+    export function _1(): _1 {
+        return MasterVoltage();
+    }
+
+    export function _0(): _0 {
+        return NOT(MasterVoltage());
+    }
+}
 
 export type NAND<
     I0 extends Voltage,
     I1 extends Voltage,
-> = Relay.NC<Voltage.High, Relay.NO<I0, I1>>;
+> = Relay.NC<Constant._1, Relay.NO<I0, I1>>;
 
 export function NAND<
     const I0 extends Voltage,
     const I1 extends Voltage,
 >(i0: I0, i1: I1): NAND<I0, I1> {
-    return Relay.NC(Voltage.High, Relay.NO(i0, i1));
-}
-
-export type NOT<
-    X extends Voltage,
-> = NAND<X, X>;
-
-export function NOT<
-    const X extends Voltage,
->(x: X): NOT<X> {
-    return NAND(x, x);
-}
-
-export type AND<
-    I0 extends Voltage,
-    I1 extends Voltage,
-> = Relay.NO<I0, I1>;
-
-export function AND<
-    const I0 extends Voltage,
-    const I1 extends Voltage,
->(i0: I0, i1: I1): AND<I0, I1> {
-    return Relay.NO(i0, i1);
-}
-
-export type OR<
-    I0 extends Voltage,
-    I1 extends Voltage,
-> = NAND<NOT<I0>, NOT<I1>>;
-
-export function OR<
-    const I0 extends Voltage,
-    const I1 extends Voltage,
->(i0: I0, i1: I1): OR<I0, I1> {
-    return NAND(NOT(i0), NOT(i1));
+    return Relay.NC(Constant._1(), Relay.NO(i0, i1));
 }
 
 export type NOR<
     I0 extends Voltage,
     I1 extends Voltage,
-> = NOT<OR<I0, I1>>;
+> = Relay.NC<Relay.NC<Constant._1, I0>, I1>;
 
 export function NOR<
     const I0 extends Voltage,
     const I1 extends Voltage,
 >(i0: I0, i1: I1): NOR<I0, I1> {
-    return NOT(OR(i0, i1));
+    return Relay.NC(Relay.NC(Constant._1(), i0), i1);
+}
+
+export type NOT<
+    I0 extends Voltage,
+> = Relay.NC<Constant._1, I0>;
+
+export function NOT<
+    const I0 extends Voltage,
+>(i0: I0): NOT<I0> {
+    return Relay.NC(Constant._1(), i0);
+}
+
+export type AND<
+    I0 extends Voltage,
+    I1 extends Voltage,
+> = Relay.NO<Relay.NO<Constant._1, I0>, I1>;
+
+export function AND<
+    const I0 extends Voltage,
+    const I1 extends Voltage,
+>(i0: I0, i1: I1): AND<I0, I1> {
+    return Relay.NO(Relay.NO(Constant._1(), i0), i1);
+}
+
+export type OR<
+    I0 extends Voltage,
+    I1 extends Voltage,
+> = NOT<NOR<I0, I1>>;
+
+export function OR<
+    const I0 extends Voltage,
+    const I1 extends Voltage,
+>(i0: I0, i1: I1): OR<I0, I1> {
+    return NOT(NOR(i0, i1));
 }
 
 export type XOR<
     I0 extends Voltage,
     I1 extends Voltage,
-> = NAND<NAND<I0, NAND<I0, I1>>, NAND<I1, NAND<I0, I1>>>;
+> = AND<NAND<I0, I1>, OR<I0, I1>>;
 
 export function XOR<
     const I0 extends Voltage,
     const I1 extends Voltage,
 >(i0: I0, i1: I1): XOR<I0, I1> {
-    return NAND(NAND(i0, NAND(i0, i1)), NAND(i1, NAND(i0, i1)));
+    return AND(NAND(i0, i1), OR(i0, i1));
 }
 
 export type XNOR<
@@ -125,8 +139,8 @@ export type DEMUX<
     S extends Voltage,
     X extends Voltage,
 > = [
-    Y0: AND<NOT<S>, X>,
-    Y1: AND<S, X>,
+    Q0: AND<NOT<S>, X>,
+    Q1: AND<S, X>,
 ];
 
 export function DEMUX<
@@ -257,8 +271,21 @@ export type DEMUX1X4<
     S1 extends Voltage,
     X extends Voltage,
 > = [
-    Y0: AND3<NOT<S0>, X, NOT<S1>>,
-    Y1: AND3<NOT<S0>, X, S1>,
-    Y2: AND3<S0, X, NOT<S1>>,
-    Y3: AND3<S0, X, S1>,
+    Q0: AND3<NOT<S0>, X, NOT<S1>>,
+    Q1: AND3<NOT<S0>, X, S1>,
+    Q2: AND3<S0, X, NOT<S1>>,
+    Q3: AND3<S0, X, S1>,
 ];
+
+export function DEMUX1X4<
+    const S0 extends Voltage,
+    const S1 extends Voltage,
+    const X extends Voltage,
+>(s0: S0, s1: S1, x: X): DEMUX1X4<S0, S1, X> {
+    return [
+        AND3(NOT(s0), x, NOT(s1)),
+        AND3(NOT(s0), x, s1),
+        AND3(s0, x, NOT(s1)),
+        AND3(s0, x, s1),
+    ];
+}

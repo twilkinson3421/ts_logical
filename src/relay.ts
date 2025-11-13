@@ -3,7 +3,7 @@ import { Voltage } from "./voltage.ts";
 export type NO<
     TInputVoltage extends Voltage,
     TCoilVoltage extends Voltage,
-> = TCoilVoltage extends Voltage.High ? TInputVoltage : Voltage.Low;
+> = TCoilVoltage extends Voltage.H ? TInputVoltage : Voltage.L;
 
 export function NO<
     const TInputVoltage extends Voltage,
@@ -12,13 +12,13 @@ export function NO<
     inputVoltage: TInputVoltage,
     coilVoltage: TCoilVoltage,
 ): NO<TInputVoltage, TCoilVoltage> {
-    return (Voltage.isHigh(coilVoltage) ? inputVoltage : Voltage.Low) as NO<TInputVoltage, TCoilVoltage>;
+    return (Voltage.isHigh(coilVoltage) ? inputVoltage : Voltage.L) as NO<TInputVoltage, TCoilVoltage>;
 }
 
 export type NC<
     TInputVoltage extends Voltage,
     TCoilVoltage extends Voltage,
-> = TCoilVoltage extends Voltage.Low ? TInputVoltage : Voltage.Low;
+> = TCoilVoltage extends Voltage.L ? TInputVoltage : Voltage.L;
 
 export function NC<
     const TInputVoltage extends Voltage,
@@ -27,5 +27,5 @@ export function NC<
     inputVoltage: TInputVoltage,
     coilVoltage: TCoilVoltage,
 ): NC<TInputVoltage, TCoilVoltage> {
-    return (Voltage.isLow(coilVoltage) ? inputVoltage : Voltage.Low) as NC<TInputVoltage, TCoilVoltage>;
+    return (Voltage.isLow(coilVoltage) ? inputVoltage : Voltage.L) as NC<TInputVoltage, TCoilVoltage>;
 }
